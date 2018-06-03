@@ -39,14 +39,6 @@ public class ExcelConverter {
 		}
 	}//End ExcelConverter Constructor
 
-//===================================================================
-	public void createWorkbook() throws FileNotFoundException
-	{
-		
-       
- 
-	}
-	
 	
 //===================================================================
 	public void writeParams()
