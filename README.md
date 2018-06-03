@@ -62,4 +62,4 @@ Project milestones are as follows:
 
 5.) Successfully produce dataset from provided 500+ .txt file.
 
-6.) (Time permitting) Enhance UX through use of JOptionPane.* in order to improve usability for client
+6.) (Time permitting) Enhance UX through use of JOptionPane.* for inputs in order to improve usability for client
