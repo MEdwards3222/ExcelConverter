@@ -57,8 +57,9 @@ Project milestones are as follows:
 
 3.) Successfully implement cartesian product parameters within one row on excel
 
-4.) Successfully implement names and game type columbs within the program
+4.) Successfully implement names and game type columbs within the program from 500+ .txt files
+    - Name and game type are within the file names of the .txt file. Will need to figure an alternative to read in and consider file name within organization
 
-5.) Successfully produce dataset from provided .txt file.
+5.) Successfully produce dataset from provided 500+ .txt file.
 
 6.) (Time permitting) Enhance UX through use of JOptionPane.* in order to improve usability for client
