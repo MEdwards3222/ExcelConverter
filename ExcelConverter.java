@@ -1,8 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-import org.apache.poi.hssf.usermodel.*;					//org.apache.poi enables developer to create .xls files
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;			//through java IDEs
+
+import org.apache.poi.xssf.*;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 
 
@@ -10,16 +14,39 @@ import org.apache.poi.ss.usermodel.Cell;
 
 
 public class ExcelConverter {
-	static String[] param; //array for .txt parameter content
-	static HSSFWorkbook workbook = new HSSFWorkbook(); //Creates a new workbook
-    static HSSFSheet firstSheet = workbook.createSheet("FIRST SHEET"); //Creates a new sheet within the workbook
-    static HSSFRow row1 = firstSheet.createRow(0); //Creates the first row within the first sheet
+	static String[] param;
+	static XSSFWorkbook workbook = new XSSFWorkbook();
+    static XSSFSheet firstSheet = workbook.createSheet("FIRST SHEET");
+    static XSSFRow row1 = firstSheet.createRow(0);
+    static String [] state = new String [] {
+    	"ATEX", "ATI", "C", "EMO+", "EMO-" ,
+    	"EV+", "EV-", "G", "IP", "L",
+    	"META", "O", "OE", "P", "QF",
+    	"QS", "RT", "S/G", "SJ", "SUM+",
+    	"SUM-", "SUM~"
+    };
+    
+    static String [] state2 = new String [] {
+        	"ATEX", "ATI", "C", "EMO+", "EMO-" ,
+        	"EV+", "EV-", "G", "IP", "L",
+        	"META", "O", "OE", "P", "QF",
+        	"QS", "RT", "S/G", "SJ", "SUM+",
+        	"SUM-", "SUM~"
+        };
 	
-	public ExcelConverter(String FileName) throws IOException //Constructor for class ExcelConverter
+	public ExcelConverter() 
 	{
+		
+	}//End Empty constructor
+
+//===================================================================
+	public void fileReader() throws FileNotFoundException
+	{
+		
 		try 
 		{
-			FileReader FILE = new FileReader(FileName); //Reads file
+			String FileName = "null";
+			FileReader FILE = new FileReader(FileName);
 			BufferedReader br = new BufferedReader(FILE);
 			String line, data = "";
 
@@ -29,43 +56,67 @@ public class ExcelConverter {
 
 			param = data.split(",");
 
-			FILE.close(); //Closes input stream
+			FILE.close();
 		
-		}
+		}//Placeholder until I figure proper format for provided .txt
 		
 		catch(IOException e)
 		{
-			throw new IOException("File not found!");
+			throw new FileNotFoundException("File not found!");
 		}
-	}//End ExcelConverter Constructor
-
+ 
+	}//end fileReader (Incomplete)
+	
 	
 //===================================================================
-	public void writeParams() //Method takes value from param[] and creates cells inputting data within the first row
-	{			  //of the .xls sheet
-		int cellNum = 0; //Keeps count of cell number
+	public void writeParams() 
+	{
+		int cellNum = 0; //Keeps track of cell position within row
 		
-		for(int i = 0; i < param.length; i++)
+		for(int i = 0; i < 3; i++)
 		{
-			Cell cell = row1.createCell(cellNum++); //Creates new cell along row 1, looping for the length of param
-			cell.setCellValue(param[i]); //Inputs value into cell from param[i]
+			//Cell cell = row1.createCell(cellNum++);
+			//cell.setCellValue(param[i]);
+			
+			if(i == 0)
+			{
+				Cell cell = row1.createCell(cellNum++);
+				cell.setCellValue("NAME");
+			}
+			
+			else if(i == 1)
+			{
+				Cell cell = row1.createCell(cellNum++);
+				cell.setCellValue("GAME TYPE");
+			}
+			
+			else
+			{
+				for(int j = 0; j < state.length; j++)
+				{
+					for(int k = 0; k < state2.length; k++)
+					{
+						Cell cell = row1.createCell(cellNum++);
+						cell.setCellValue(state[j] + "&" + state[k]);
+						
+					}
+				}
+			}
 			
 		}
-	}//End write parameters
+	}
 	
 //===================================================================
 
 	public static void main(String[] args) throws IOException {
 		
-		ExcelConverter in = new ExcelConverter("input.txt"); //Creates a new ExcelConverter
-		in.writeParams(); //Writes in parameters
+		ExcelConverter in = new ExcelConverter();
+		in.writeParams();
 
-     
-        try (FileOutputStream fos = new FileOutputStream(new File("CreateExcelDemo.xls"))) {    
-	// To write out the workbook into a file we need to create an output
+        // To write out the workbook into a file we need to create an output
         // stream where the workbook content will be written to.
+        try (FileOutputStream fos = new FileOutputStream(new File("CreateExcelDemo.xlsx"))) {
             workbook.write(fos);
-		
         } catch (IOException e) {
             e.printStackTrace();
         }
