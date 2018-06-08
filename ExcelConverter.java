@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.io.File.*;
 
 
 import org.apache.poi.xssf.*;
@@ -14,6 +15,9 @@ import org.apache.poi.ss.usermodel.Cell;
 
 
 public class ExcelConverter {
+	
+	static File dir = new File("/Users/michaeledwards/Documents/ExcelConverterProject/Indiaanalyzed2018_05");
+	static List<String> fileList = new ArrayList<String>();
 	static String[] param;
 	static XSSFWorkbook workbook = new XSSFWorkbook();
     static XSSFSheet firstSheet = workbook.createSheet("FIRST SHEET");
@@ -59,6 +63,7 @@ public class ExcelConverter {
 			FILE.close();
 		
 		}//Placeholder until I figure proper format for provided .txt
+		//Consider using substring method "https://docs.oracle.com/javase/7/docs/api/java/lang/String.html"
 		
 		catch(IOException e)
 		{
@@ -107,11 +112,25 @@ public class ExcelConverter {
 	}
 	
 //===================================================================
+	
+	public void dirReader()  //reads file in a directory and stores listed items in a List
+	{
+		fileList = Arrays.asList(dir.list(
+				new FilenameFilter() {
+					@Override public boolean accept(File dir, String name) {
+						return name.endsWith(".txt");
+					}
+				}));
+		
+	}//end dirReader
+//===================================================================
 
 	public static void main(String[] args) throws IOException {
 		
 		ExcelConverter in = new ExcelConverter();
 		in.writeParams();
+		in.dirReader();
+		System.out.println(fileList);
 
         // To write out the workbook into a file we need to create an output
         // stream where the workbook content will be written to.
