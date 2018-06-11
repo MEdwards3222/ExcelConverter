@@ -55,10 +55,10 @@ Project milestones are as follows:
 
 2.) <del>Successfully create a fileReader that takes in inputs from a .txt file</del>
 
-3.) <del>Successfully implement cartesian product parameters within one row on excel<del>
+3.) <del>Successfully implement cartesian product parameters within one row on excel</del>
 
-4.) Successfully implement names and game type columbs within the program from 500+ .txt files
-    - Name and game type are within the file names of the .txt file. Will need to figure an alternative to read in and consider file name within organization
+4.) <del>Successfully implement names and game type columbs within the program from 500+ .txt files
+    - Name and game type are within the file names of the .txt file. Will need to figure an alternative to read in and consider file name within organization</del>
 
 5.) Successfully produce dataset from provided 500+ .txt file.
 
