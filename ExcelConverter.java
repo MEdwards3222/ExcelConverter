@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 import java.io.File.*;
+import java.util.HashMap;
+import java.util.Scanner;
 
 
 import org.apache.poi.xssf.*;
@@ -20,8 +22,9 @@ public class ExcelConverter {
 	
 	static File dir = new File("/Users/michaeledwards/Documents/ExcelConverterProject/Indiaanalyzed2018_05"); //Sets the filepath for one of the folders used to store .txt files. End program will include all three numbers.
 	static List<String> fileList = new ArrayList<String>();
+	static List<String> fullStateList = new ArrayList<String>();
 	
-	static String[] param;
+	static List<String> readStates = new ArrayList<String>();
 	static XSSFWorkbook workbook = new XSSFWorkbook(); //Creates a new workbook (.xlsx file)
     static XSSFSheet firstSheet = workbook.createSheet("FIRST SHEET"); //Creates a new sheet for the spreadsheet
     static XSSFRow row1 = firstSheet.createRow(0); //"Creates" a row on the first sheet
@@ -41,6 +44,8 @@ public class ExcelConverter {
         	"QS", "RT", "S/G", "SJ", "SUM+",
         	"SUM-", "SUM~"
         };
+    
+    static HashMap<String, Integer>  dataset = new HashMap<String, Integer>();
 	
 	public ExcelConverter() 
 	{
@@ -48,21 +53,24 @@ public class ExcelConverter {
 	}//End Empty constructor
 
 //===================================================================
-	public void fileReader() throws FileNotFoundException
+	public void fileReader(String fileName) throws FileNotFoundException
 	{
 		
 		try 
 		{
-			String FileName = "null";
-			FileReader FILE = new FileReader(FileName);
+			
+			FileReader FILE = new FileReader(fileName);
 			BufferedReader br = new BufferedReader(FILE);
 			String line, data = "";
+			
 
 
 			while ( (line = br.readLine()) != null)       
-				data += line;
+				readStates.add(line.substring(4));//data += line.split(";", 2);
 
-			param = data.split(",");
+			
+		
+			
 
 			FILE.close();
 		
@@ -106,7 +114,8 @@ public class ExcelConverter {
 					for(int k = 0; k < state2.length; k++)
 					{
 						Cell cell = row1.createCell(cellNum++);
-						cell.setCellValue(state[j] + "&" + state[k]);
+						cell.setCellValue(state[j] + ";" + state[k]);
+						fullStateList.add(state[j] + ";" + state[k]);
 						
 					}
 				}
@@ -127,6 +136,22 @@ public class ExcelConverter {
 				}));
 		
 	}//end dirReader
+//===================================================================
+	public void compareAgainstHash()
+	{
+		Integer tmp = 0;
+		
+			for(int i = 0; i < readStates.size(); i++)
+			{
+				if(dataset.containsKey(readStates.get(i)))
+				{
+					dataset.put(readStates.get(i), tmp + 1);
+				}
+				
+			}
+		
+		
+	}//end compareAgainstHash
 	
 //===================================================================
 	public List<String> getName(List<String> fileList)
@@ -174,14 +199,40 @@ public class ExcelConverter {
 		
 		return gameList; 
 	}
+	
+//===================================================================
+	public void populateHash() //Creates and populates a Hash table that associates every state with a value initialized at 0
+	{
+		for(int i = 0; i < fullStateList.size(); i++)
+		{
+			dataset.put(fullStateList.get(i), 0);
+		}
+	} 
+	
+//===================================================================
 
 //===================================================================
 
 	public static void main(String[] args) throws IOException {
 		
+		
+		
+		
 		ExcelConverter in = new ExcelConverter();
-		in.writeParams();
-		in.dirReader();
+		in.writeParams(); //write out parameters in excel sheet
+		in.dirReader(); //reads directory and pulls out names and game type
+		in.populateHash(); //populates has with all combinations of states
+		in.fileReader("input.txt"); //reads a given filepath or individual text
+		in.compareAgainstHash(); //compares what is read against the Hash table
+		
+		
+		System.out.println(readStates + " \n");
+		System.out.println("Size: " + readStates.size() + " \n");
+		System.out.println(readStates.get(5));
+		System.out.println("------------ \n");
+		System.out.println(dataset.values());
+	
+		
 		in.writeNamesAndGame(in.getName(fileList), in.getGameType(fileList));
 		
 
