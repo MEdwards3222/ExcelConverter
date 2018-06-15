@@ -20,7 +20,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 public class ExcelConverter {
 	
-	static File dir = new File("/Users/michaeledwards/Documents/ExcelConverterProject/Indiaanalyzed2018_05"); //Sets the filepath for one of the folders used to store .txt files. End program will include all three numbers.
+	static File dir = new File("/Users/michaeledwards/eclipse-workspace/ExcelConverter/allfiles"); //Sets the filepath for one of the folders used to store .txt files. End program will include all three numbers.
 	static List<String> fileList = new ArrayList<String>();
 	static List<String> fullStateList = new ArrayList<String>();
 	
@@ -53,33 +53,54 @@ public class ExcelConverter {
 	}//End Empty constructor
 
 //===================================================================
-	public void fileReader(String fileName) throws FileNotFoundException
+	public void fileReader() throws FileNotFoundException
 	{
 		
 		try 
 		{
 			
-			FileReader FILE = new FileReader(fileName);
-			BufferedReader br = new BufferedReader(FILE);
-			String line, data = "";
+			
+			for(String fn :dir.list())
+			{
+				
+				System.out.println(fn);
+				FileInputStream fsstream = new FileInputStream(fn);
+				DataInputStream in = new DataInputStream(fsstream);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				String Strline;
+				
+				while ( (Strline = br.readLine()) != null)  
+				{
+					readStates.add(Strline.substring(4));//data += line.split(";", 2);
+					
+				}
+				
+				in.close();
+			}
+			
+			
+			//FileReader FILE = new FileReader(fileName);
+			//BufferedReader br = new BufferedReader(FILE);
+			//String line, data = "";
+			
 			
 
-
-			while ( (line = br.readLine()) != null)       
-				readStates.add(line.substring(4));//data += line.split(";", 2);
+		
 
 			
 		
 			
 
-			FILE.close();
+			
 		
 		}//Placeholder until I figure proper format for provided .txt
 		//Consider using substring method "https://docs.oracle.com/javase/7/docs/api/java/lang/String.html"
 		
 		catch(IOException e)
 		{
+			e.printStackTrace();
 			throw new FileNotFoundException("File not found!");
+			
 		}
  
 	}//end fileReader (Incomplete)
@@ -145,7 +166,7 @@ public class ExcelConverter {
 			{
 				if(dataset.containsKey(readStates.get(i)))
 				{
-					dataset.put(readStates.get(i), tmp + 1);
+					dataset.put(readStates.get(i), tmp++);
 				}
 				
 			}
@@ -222,15 +243,19 @@ public class ExcelConverter {
 		in.writeParams(); //write out parameters in excel sheet
 		in.dirReader(); //reads directory and pulls out names and game type
 		in.populateHash(); //populates has with all combinations of states
-		in.fileReader("input.txt"); //reads a given filepath or individual text
+		
+		System.out.println(dir.list().length);
+		System.out.println(fileList.get(0));
+		
+		in.fileReader(); //reads a given filepath or individual text
 		in.compareAgainstHash(); //compares what is read against the Hash table
 		
 		
 		System.out.println(readStates + " \n");
 		System.out.println("Size: " + readStates.size() + " \n");
-		System.out.println(readStates.get(5));
+	
 		System.out.println("------------ \n");
-		System.out.println(dataset.values());
+		System.out.println(dataset);
 	
 		
 		in.writeNamesAndGame(in.getName(fileList), in.getGameType(fileList));
